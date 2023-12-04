@@ -25,9 +25,6 @@ const createWindow = () => {
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
 };
-require('electron-reload')(__dirname, {
-  electron: path.join(__dirname, 'node_modules', '.bin', 'electron')
-})
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
