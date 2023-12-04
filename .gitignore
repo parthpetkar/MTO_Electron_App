@@ -90,3 +90,5 @@ typings/
 
 # Electron-Forge
 out/
+
+mto-win32-x64/
