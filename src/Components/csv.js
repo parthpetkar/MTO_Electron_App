@@ -3,13 +3,18 @@ import React from 'react';
 const XlsxFileUploader = () => {
     const [downloadLink, setDownloadLink] = React.useState('');
     const [uploadMessage, setUploadMessage] = React.useState('');
+    const [isUploading, setIsUploading] = React.useState(false);
+    const [selectedFile, setSelectedFile] = React.useState(null);
 
     const handleFileChange = (event) => {
-        const file = event.target.files[0];
+        setSelectedFile(event.target.files[0]);
+    };
 
-        if (file) {
+    const handleUploadClick = () => {
+        if (selectedFile) {
             // Send the file to the backend
-            sendFileToBackend(file);
+            setIsUploading(true);
+            sendFileToBackend(selectedFile);
         }
     };
 
@@ -35,6 +40,9 @@ const XlsxFileUploader = () => {
             .catch((error) => {
                 console.error('Error uploading file:', error);
                 setUploadMessage('Error uploading file. Please try again.');
+            })
+            .finally(() => {
+                setIsUploading(false);
             });
     };
 
@@ -42,6 +50,10 @@ const XlsxFileUploader = () => {
         <div>
             <h2>CSV File Uploader</h2>
             <input type="file" onChange={handleFileChange} />
+            <button onClick={handleUploadClick} disabled={isUploading || !selectedFile}>
+                Upload
+            </button>
+            {isUploading && <p>Uploading...</p>}
             {uploadMessage && <p>{uploadMessage}</p>}
             {downloadLink && (
                 <div>
