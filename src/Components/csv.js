@@ -1,23 +1,14 @@
-import React, { useState } from 'react';
-import * as XLSX from 'xlsx';
+import React from 'react';
 
-const XlsxToCsvConverter = () => {
-    const [csvData, setCsvData] = useState('');
+const XlsxFileUploader = () => {
+    const [downloadLink, setDownloadLink] = React.useState('');
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
 
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const workbook = XLSX.read(e.target.result, { type: 'binary' });
-                const csvData = XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]);
-                setCsvData(csvData);
-
-                // Send the file to the backend
-                sendFileToBackend(file);
-            };
-            reader.readAsBinaryString(file);
+            // Send the file to the backend
+            sendFileToBackend(file);
         }
     };
 
@@ -32,7 +23,8 @@ const XlsxToCsvConverter = () => {
             .then((response) => response.text())
             .then((message) => {
                 console.log(message);
-                // You can add additional logic here if needed
+                // Set the download link for the button
+                setDownloadLink('http://localhost:5000/download');
             })
             .catch((error) => {
                 console.error('Error uploading file:', error);
@@ -41,10 +33,17 @@ const XlsxToCsvConverter = () => {
 
     return (
         <div>
-            <h2>XLSX to CSV Converter</h2>
+            <h2>XLSX File Uploader</h2>
             <input type="file" onChange={handleFileChange} />
+            {downloadLink && (
+                <div>
+                    <a href={downloadLink} download="downloaded_file.xlsx">
+                        <button>Download XLSX</button>
+                    </a>
+                </div>
+            )}
         </div>
     );
 };
 
-export default XlsxToCsvConverter;
+export default XlsxFileUploader;

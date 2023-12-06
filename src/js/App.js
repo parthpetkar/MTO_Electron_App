@@ -1,7 +1,7 @@
 import React from 'react'
-import XlsxToCsvConverter from '../Components/csv'
+import XlsxFileUploader from '../Components/csv'
 export default function App(){
   return (
-    <XlsxToCsvConverter />
+    <XlsxFileUploader />
   )
 }
