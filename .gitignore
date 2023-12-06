@@ -92,3 +92,15 @@ typings/
 out/
 
 mto-win32-x64/
+
+# Ignore downloaded Excel file
+*.xlsx
+
+# Ignore grouped CSV file
+temp_grouped.csv
+
+# Ignore raw CSV file
+temp.csv
+
+# Ignore app.js within the build/js folder
+build/js/app.js
