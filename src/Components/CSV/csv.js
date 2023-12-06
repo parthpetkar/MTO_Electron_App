@@ -1,5 +1,44 @@
 import React from 'react';
+import styled from 'styled-components';
 
+// Create styled components
+const Container = styled.div`
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const Title = styled.h2`
+    color: #333;
+`;
+
+const FileInput = styled.input`
+    margin-bottom: 10px;
+`;
+
+const UploadButton = styled.button`
+    background-color: ${props => (props.disabled ? '#aaaaaa' : '#4caf50')};
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+    font-size: 16px;
+`;
+
+const Message = styled.p`
+    margin-top: 10px;
+    color: #333;
+`;
+
+const DownloadButton = styled.button`
+    background-color: #3498db;
+`;
+
+// Component
 const XlsxFileUploader = () => {
     const [downloadLink, setDownloadLink] = React.useState('');
     const [uploadMessage, setUploadMessage] = React.useState('');
@@ -12,7 +51,6 @@ const XlsxFileUploader = () => {
 
     const handleUploadClick = () => {
         if (selectedFile) {
-            // Send the file to the backend
             setIsUploading(true);
             sendFileToBackend(selectedFile);
         }
@@ -47,22 +85,22 @@ const XlsxFileUploader = () => {
     };
 
     return (
-        <div>
-            <h2>CSV File Uploader</h2>
-            <input type="file" onChange={handleFileChange} />
-            <button onClick={handleUploadClick} disabled={isUploading || !selectedFile}>
+        <Container>
+            <Title>CSV File Uploader</Title>
+            <FileInput type="file" onChange={handleFileChange} />
+            <UploadButton onClick={handleUploadClick} disabled={isUploading || !selectedFile}>
                 Upload
-            </button>
-            {isUploading && <p>Uploading...</p>}
-            {uploadMessage && <p>{uploadMessage}</p>}
+            </UploadButton>
+            {isUploading && <Message>Uploading...</Message>}
+            {uploadMessage && <Message>{uploadMessage}</Message>}
             {downloadLink && (
                 <div>
                     <a href={downloadLink} download="downloaded_file.xlsx">
-                        <button>Download XLSX</button>
+                        <DownloadButton>Download XLSX</DownloadButton>
                     </a>
                 </div>
             )}
-        </div>
+        </Container>
     );
 };
 
