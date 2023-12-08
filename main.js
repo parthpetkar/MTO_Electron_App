@@ -1,29 +1,10 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const axios = require('axios');
-const { exec } = require('child_process');
 
-let ngrokUrl;
-
-// Run Ngrok to expose Flask server
-const ngrokProcess = exec('./ngrok http 5000'); // Replace 5000 with your Flask server port
-
-// Capture Ngrok output
-ngrokProcess.stdout.on('data', (data) => {
-  const match = data.match(/(http|https):\/\/[a-zA-Z0-9]+\.[a-zA-Z0-9]+/);
-  if (match) {
-    ngrokUrl = match[0];
-    console.log(`Ngrok URL: ${ngrokUrl}`);
-
-    // Create the Electron window after getting Ngrok URL
-    createWindow();
-  }
-});
-
-// Handle Ngrok process exit
-ngrokProcess.on('exit', (code, signal) => {
-  console.log(`Ngrok process exited with code ${code} and signal ${signal}`);
-});
+// Handle creating/removing shortcuts on Windows when installing/uninstalling.
+if (require('electron-squirrel-startup')) {
+  app.quit();
+}
 
 const createWindow = () => {
   // Create the browser window.
@@ -32,14 +13,14 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-        nodeIntegration: true,
-        contextIsolation: false,
-        enableRemoteModule: true,
-      },
-    });
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+    },
+  });
 
-  // Load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
+  // and load the index.html of the app.
+  mainWindow.loadFile(path.join(__dirname, 'index.html')); 
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
@@ -48,12 +29,11 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', () => {
-  // You can now use ngrokUrl as the base URL in your Electron app
-  console.log('Electron is ready!');
-});
+app.on('ready', createWindow);
 
-// Quit when all windows are closed, except on macOS.
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
@@ -68,15 +48,5 @@ app.on('activate', () => {
   }
 });
 
-// Handle Electron app exit
-app.on('before-quit', () => {
-  // Terminate Ngrok when the Electron app is closed
-  ngrokProcess.kill();
-});
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (error) => {
-  console.error(`Uncaught Exception: ${error}`);
-  ngrokProcess.kill();
-  app.quit();
-});
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and import them here.
